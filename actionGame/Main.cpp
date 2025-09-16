@@ -10,9 +10,9 @@ public:
 
 	void update()
 	{
-		if (KeyLeft.pressed() || KeyA.pressed()) playerPos.x -= 3.0;
+		if (KeyLeft.pressed() || KeyA.pressed()) playerPos.x -= 10.0;
 
-		if (KeyRight.pressed() || KeyD.pressed()) playerPos.x += 3.0;
+		if (KeyRight.pressed() || KeyD.pressed()) playerPos.x += 10.0;
 
 		if (KeyUp.pressed() || KeyW.pressed() || KeySpace.pressed()) isPlayerJumping = true;
 
@@ -46,38 +46,56 @@ public:
 		.scaled(0.75)
 		.mirrored(isPlayerFacingRight)
 		.drawAt(playerPos.x,playerPos.y);
+
+		collider
+		.setCenter(playerPos)
+		.drawFrame(3,Palette::Green);
 	}
 
+protected:
+	Vec2 playerPos;
 
 private:
 
 	Texture player{ U"🥜"_emoji };
 
-	Vec2 playerPos;
+	Circle collider{ playerPos, 50.0 };
 
 	bool isPlayerFacingRight = true;
 
 	bool isPlayerJumping;
 
-	int32 isWhileJumping = 0.0;
+	double isWhileJumping = 0.0;
 
 	double gravity = 0.0;
 };
 
-class Enemy
+class Enemy:Player
 {
 public:
 
 	Enemy() : enemyPos(600.0, 540.0) {};
 
+	void update()
+	{
+		if(enemyPos.x > playerPos.x) enemyPos.x -= 5.0;
+		else if(enemyPos.x < playerPos.x) enemyPos.x += 5.0;
+	}
+
 	void draw() {
 		enemy
 		.drawAt(enemyPos.x, enemyPos.y);
+
+		collider
+		.setCenter(enemyPos)
+		.drawFrame(3, Palette::Red);
 	}
 
 private:
 
 	Texture enemy{ U"🐺"_emoji };
+
+	Circle collider{ enemyPos, 50.0 };
 
 	Vec2 enemyPos;
 };
@@ -93,6 +111,8 @@ void Main()
 		player.update();
 
 		player.draw();
+
+		enemy.update();
 
 		enemy.draw();
 	}
