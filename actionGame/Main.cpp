@@ -82,22 +82,25 @@ public:
 	void update()
 	{
 		if(enemyPos.x > playerPos.x) enemyPos.x -= 2.0;
-		if(enemyPos.x < playerPos.x) enemyPos.x += 2.0;
+		else if(enemyPos.x < playerPos.x) enemyPos.x += 2.0;
 	}
 
 	void draw() {
 		if (!isAlive) return;
 
-		enemy
-		.drawAt(enemyPos.x, enemyPos.y);
+		else
+		{
+			enemy
+				.drawAt(enemyPos.x, enemyPos.y);
 
-		collider
-		.setCenter(enemyPos)
-		.drawFrame(3, Palette::Red);
+			collider
+				.setCenter(enemyPos)
+				.drawFrame(3, Palette::Red);
 
-		weakCollider
-		.setCenter(enemyPos.x,enemyPos.y-60.0)
-		.drawFrame(3, Palette::Magenta);
+			weakCollider
+				.setCenter(enemyPos.x, enemyPos.y - 80.0)
+				.drawFrame(3, Palette::Magenta);
+		}
 	}
 
 	Circle collider{ enemyPos, 60.0 };
@@ -118,12 +121,14 @@ class ItemBox
 public:
 	ItemBox() : ItemBoxPos(400.0, 400.0) {};
 	void draw() {
+		if(!isHaveItem) return;
+
 		itemBox
 		.scaled(0.5)
 		.drawAt(ItemBoxPos.x, ItemBoxPos.y);
 
 		rectcollider
-		.setCenter(ItemBoxPos)
+		.setCenter(ItemBoxPos.x, ItemBoxPos.y)
 		.drawFrame(3,Palette::Yellow);
 	}
 private:
@@ -132,6 +137,8 @@ private:
 	Vec2 ItemBoxPos;
 
 	RectF rectcollider;
+
+	bool isHaveItem = true;
 };
 
 class Ground
